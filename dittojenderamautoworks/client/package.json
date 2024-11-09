@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "author": "Sanidhya Kr. Verma",
   "description": "Modern Full Stack Admin Dashboard using MERN",
   "keywords": [
     "reactjs",
