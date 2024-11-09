@@ -1,7 +1,7 @@
 
 
 
-<h1 align="center">Hi 👋, We are Ditto ![Ditto](https://github.com/user-attachments/assets/0f847093-79b7-4bc1-ba4e-dc6414519dac) </h1>
+<h1 align="center">Hi 👋, We are Ditto</h1> ![Ditto](https://github.com/user-attachments/assets/0f847093-79b7-4bc1-ba4e-dc6414519dac)
 <h3 align="center">A Group Of Developers from SECR3104 - Application Development(Section 02)</h3>
 
 - 🔭 I’m currently working on **Ditto Jenderam Autoworks System**
