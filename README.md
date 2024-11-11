@@ -12,7 +12,7 @@
 
 - 🔭 I’m currently working on **Ditto Jenderam Autoworks System**
 
-- 👯 The Collaborators are **Anushka**
+- 👯 The Collaborators are **Monkey**
 
 <h3 align="left">Connect with me:</h3>
 <p align="left">
