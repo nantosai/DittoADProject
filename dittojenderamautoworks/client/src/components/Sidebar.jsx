@@ -149,10 +149,11 @@ const Sidebar = ({
                     }}
                     sx={{
                       cursor: "pointer",
+                      margin: "0.5rem 0",
                     }}
-                    title="ECOMVISION"
+                    title="JENDERAM"
                   >
-                    ECOMVISION
+                    JENDERAM AUTOWORKS
                   </Typography>
                 </Box>
                 {/* Mobile Sidebar Toggle Icon */}
