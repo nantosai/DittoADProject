@@ -5,6 +5,11 @@ const Profile = () => {
     const [name, setName] = useState('Anushka Roshni');
     const [phoneNumber, setPhoneNumber] = useState('0187719068');
     const [password, setPassword] = useState('1234');
+    const [isEditing, setIsEditing] = useState(false);
+
+    const handleEditClick = () => {
+        setIsEditing(!isEditing);
+    };
 
     return (
         <div className="profile-page">
@@ -30,6 +35,7 @@ const Profile = () => {
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
+                            disabled={!isEditing}
                         />
                     </label>
                     <label>
@@ -38,6 +44,7 @@ const Profile = () => {
                             type="text"
                             value={phoneNumber}
                             onChange={(e) => setPhoneNumber(e.target.value)}
+                            disabled={!isEditing}
                         />
                     </label>
                     <label>
@@ -46,6 +53,7 @@ const Profile = () => {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            disabled={!isEditing}
                         />
                     </label>
                 </div>
