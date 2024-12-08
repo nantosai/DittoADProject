@@ -27,6 +27,7 @@ import {
 import { FlexBetween } from ".";
 import profileImage from "../assets/profile.jpeg";
 
+
 // Navbar
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   // redux dispatch items
@@ -62,6 +63,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           <IconButton
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             title="Toggle Sidebar"
+            sx = {{color: theme.palette.icons.inactive}}
           >
             <MenuIcon />
           </IconButton>
@@ -76,7 +78,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
           >
             <InputBase placeholder="Search..." />
             <IconButton>
-              <Search />
+              <Search sx={{color: theme.palette.icons.inactive}}/>
             </IconButton>
           </FlexBetween>
         </FlexBetween>
@@ -84,30 +86,19 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
         {/* Right Side */}
         <FlexBetween gap="1.5rem">
           {/* Source Code */}
-          <IconButton
-            onClick={() =>
-              window.open(
-                "http://www.github.com/sanidhyy/mern-admin/",
-                "_blank"
-              )
-            }
-            title="Source Code"
-          >
-            <GitHub sx={{ fontSize: "25px" }} />
-          </IconButton>
-
+          
           {/* Dark/Light Mode */}
-          <IconButton onClick={() => dispatch(setMode())} title="Dark Mode">
+          <IconButton onClick={() => dispatch(setMode())} title="">
             {theme.palette.mode === "dark" ? (
-              <DarkModeOutlined sx={{ fontSize: "25px" }} />
+              <LightModeOutlined sx={{color: theme.palette.icons.inactive, fontSize: "25px" }} />
             ) : (
-              <LightModeOutlined sx={{ fontSize: "25px" }} />
+              <DarkModeOutlined sx={{color: theme.palette.icons.inactive, fontSize: "25px" }} />
             )}
           </IconButton>
 
           {/* Settings */}
           <IconButton title="Setting">
-            <SettingsOutlined sx={{ fontSize: "25px" }} />
+            <SettingsOutlined sx={{color: theme.palette.icons.inactive, fontSize: "25px" }} />
           </IconButton>
 
           {/* User */}
@@ -136,20 +127,20 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 <Typography
                   fontWeight="bold"
                   fontSize="0.85rem"
-                  sx={{ color: theme.palette.secondary[100] }}
+                  sx={{ color: theme.palette.secondary.main }}
                 >
                   {user.name}
                 </Typography>
                 <Typography
                   fontSize="0.75rem"
-                  sx={{ color: theme.palette.secondary[200] }}
+                  sx={{ color: theme.palette.secondary.main }}
                 >
                   {user.occupation}
                 </Typography>
               </Box>
               <ArrowDropDownOutlined
                 sx={{
-                  color: theme.palette.secondary[300],
+                  color: theme.palette.icons.inactive,
                   fontSize: "25px",
                 }}
               />

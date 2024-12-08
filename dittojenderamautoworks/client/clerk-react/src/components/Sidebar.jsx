@@ -124,7 +124,7 @@ const Sidebar = ({
           sx={{
             width: drawerWidth,
             "& .MuiDrawer-paper": {
-              color: theme.palette.secondary[200],
+              color: theme.palette.secondary.main,
               backgroundColor: theme.palette.background.alt,
               boxSizing: "border-box",
               borderWidth: isNonMobile ? 0 : "2px",
@@ -149,10 +149,11 @@ const Sidebar = ({
                     }}
                     sx={{
                       cursor: "pointer",
+                      margin: "0.5rem 0",
                     }}
-                    title="ECOMVISION"
+                    title="JENDERAM"
                   >
-                    ECOMVISION
+                    JENDERAM AUTOWORKS
                   </Typography>
                 </Box>
                 {/* Mobile Sidebar Toggle Icon */}
@@ -189,14 +190,23 @@ const Sidebar = ({
                         setActive(lcText);
                       }}
                       sx={{
-                        backgroundColor:
+                        backgroundColor: //button background colour
                           active === lcText
-                            ? theme.palette.secondary[300]
+                            ? theme.palette.button.background
                             : "transparent",
-                        color:
+                        color:            //text colour
                           active === lcText
-                            ? theme.palette.primary[600]
-                            : theme.palette.secondary[100],
+                            ? theme.palette.button.inactiveText
+                            : theme.palette.button.activeText,
+                        
+                        "&:hover": {
+                          backgroundColor: theme.palette.button.inactiveText,
+                          color: theme.palette.secondary.light,
+
+                          "& .MuiListItemIcon-root": {
+                            color: theme.palette.secondary.light, // Update icon color on hover
+                          },
+                        },
                       }}
                     >
                       {/* icon */}
@@ -205,8 +215,8 @@ const Sidebar = ({
                           ml: "2rem",
                           color:
                             active === lcText
-                              ? theme.palette.primary[600]
-                              : theme.palette.secondary[200],
+                              ? theme.palette.icons.active
+                              : theme.palette.icons.inactive,
                         }}
                       >
                         {icon}
@@ -241,19 +251,19 @@ const Sidebar = ({
                 <Typography
                   fontWeight="bold"
                   fontSize="0.9rem"
-                  sx={{ color: theme.palette.secondary[100] }}
+                  sx={{ color: theme.palette.secondary.main }}
                 >
                   {user.name}
                 </Typography>
                 <Typography
                   fontSize="0.8rem"
-                  sx={{ color: theme.palette.secondary[200] }}
+                  sx={{ color: theme.palette.secondary.main }}
                 >
                   {user.occupation}
                 </Typography>
               </Box>
               <SettingsOutlined
-                sx={{ color: theme.palette.secondary[300], fontSize: "25px" }}
+                sx={{ color: theme.palette.icons.inactive, fontSize: "25px" }}
               />
             </FlexBetween>
           </Box>

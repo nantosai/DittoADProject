@@ -19,12 +19,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
   }
 
   // theme colors
-  const colors = [
-    theme.palette.secondary[500],
-    theme.palette.secondary[300],
-    theme.palette.secondary[300],
-    theme.palette.secondary[500],
-  ];
+  const colors = ['#DC2A4B', '#941C32', '#A15DE4', '#D9863D'];
 
   // formatted data
   const formattedData = Object.entries(data.salesByCategory).map(
@@ -38,54 +33,59 @@ const BreakdownChart = ({ isDashboard = false }) => {
 
   return (
     <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
       height={isDashboard ? "400px" : "100%"}
-      width={undefined}
-      minHeight={isDashboard ? "325px" : undefined}
-      minWidth={isDashboard ? "325px" : undefined}
+      width="100%"
+      minHeight={isDashboard ? "70%" : undefined}
+      minWidth={isDashboard ? "70%" : undefined}
       position="relative"
     >
       {/* Pie chart */}
+    <Box 
+      height={isDashboard ? "325px" : "100%"}
+      width={isDashboard ? "325px" : "100%"}
+      >
       <ResponsivePie
         data={formattedData}
         theme={{
           axis: {
             domain: {
               line: {
-                stroke: theme.palette.secondary[200],
+                stroke: theme.palette.grey[1000],
               },
             },
             legend: {
               text: {
-                fill: theme.palette.secondary[200],
+                fill: theme.palette.grey[1000],
               },
             },
             ticks: {
               line: {
-                stroke: theme.palette.secondary[200],
+                stroke: theme.palette.grey[1000],
                 strokeWidth: 1,
               },
               text: {
-                fill: theme.palette.secondary[200],
+                fill: theme.palette.grey[1000],
               },
             },
           },
           legends: {
             text: {
-              fill: theme.palette.secondary[200],
+              fill: theme.palette.grey[1000],
             },
           },
           tooltip: {
             container: {
-              color: theme.palette.primary.main,
+              color: theme.palette.grey[0],
             },
           },
         }}
         colors={{ datum: "data.color" }}
-        margin={
-          isDashboard
-            ? { top: 40, right: 80, bottom: 100, left: 50 }
-            : { top: 40, right: 80, bottom: 80, left: 80 }
-        }
+        margin={isDashboard ? { top: 40, right: 10, bottom: 40, left: 10 } 
+                            : { top: 40, right: 80, bottom: 50, left: 80 }}
         sortByValue={true}
         innerRadius={0.45}
         activeOuterRadiusOffset={8}
@@ -95,55 +95,59 @@ const BreakdownChart = ({ isDashboard = false }) => {
           modifiers: [["darker", 0.2]],
         }}
         enableArcLabels={!isDashboard}
-        arcLinkLabelsTextColor={theme.palette.secondary[200]}
+        arcLinkLabelsTextColor={theme.palette.secondary.main}
         arcLinkLabelsThickness={2}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
-        arcLabelsTextColor={{
-          from: "color",
-          modifiers: [["darker", 2]],
-        }}
-        legends={[
-          {
-            anchor: "bottom",
-            direction: "row",
-            justify: false,
-            translateX: isDashboard ? 20 : 0,
-            translateY: isDashboard ? 50 : 56,
-            itemsSpacing: 0,
-            itemWidth: 85,
-            itemHeight: 18,
-            itemTextColor: "#999",
-            itemDirection: "left-to-right",
-            itemOpacity: 1,
-            symbolSize: 18,
-            symbolShape: "circle",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemTextColor: theme.palette.primary[500],
-                },
-              },
-            ],
-          },
-        ]}
+        arcLabelsTextColor={theme.palette.grey[0] || "white"}       
       />
+    </Box>
+
+    {/* Legends in a separate box */}
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      flexWrap="wrap"
+      mt={2}
+      mb={2}
+      gap={2}
+      width="100%"
+    >
+      {formattedData.map((item) => (
+        <Box key={item.id} display="flex" alignItems="center" gap={1}>
+          <Box
+            width="16px"
+            height="16px"
+            bgcolor={item.color}
+            borderRadius="50%"
+          />
+          <Typography variant="body2" color={theme.palette.secondary.main}>
+            {item.label}
+          </Typography>
+        </Box>
+      ))}
+    </Box>
 
       {/* Pie chart center */}
       <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
         position="absolute"
-        top="50%"
-        left="50%"
-        color={theme.palette.secondary[400]}
+        top={0}
+        bottom={isDashboard ? 60 : 50}
+        left={0}
+        right={0}
+        width={isDashboard ? "100%" : "100%"}
+        height={isDashboard ? "80%" : "90%"}
+        maxWidth="100px" // Adjust to match your text area
+        maxHeight="50px"
+        margin="auto"
+        color={theme.palette.secondary.light}
         textAlign="center"
         pointerEvents="none"
-        sx={{
-          transform: isDashboard
-            ? "translate(-75%, -170%)"
-            : "translate(-50%, -100%)",
-        }}
-      >
+        >
         <Typography variant="h6">
           {!isDashboard && "Total:"} ${data.yearlySalesTotal}
         </Typography>

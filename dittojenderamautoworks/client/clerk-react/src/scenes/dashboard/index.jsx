@@ -68,21 +68,22 @@ const Dashboard = () => {
     <Box m="1.5rem 2.5rem">
       <FlexBetween>
         {/* Header */}
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        <Header title="DASHBOARD" subtitle="Welcome to your dashboard"
+         />
 
         {/* Content */}
         <Box>
           {/* Download Reports */}
           <Button
             sx={{
-              backgroundColor: theme.palette.secondary.light,
+              backgroundColor: theme.palette.button,
               color: theme.palette.background.alt,
               fontSize: "14px",
               fontWeight: "bold",
               padding: "10px 20px",
 
               "&:hover": {
-                backgroundColor: theme.palette.background.alt,
+                backgroundColor: theme.palette.button.inactiveText,
                 color: theme.palette.secondary.light,
               },
             }}
@@ -114,7 +115,7 @@ const Dashboard = () => {
           description="Since last month"
           icon={
             <Email
-              sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+              sx={{ color: theme.palette.grey[500], fontSize: "26px" }}
             />
           }
         />
@@ -127,7 +128,7 @@ const Dashboard = () => {
           description="Since last month"
           icon={
             <PointOfSale
-              sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+              sx={{ color: theme.palette.grey[500], fontSize: "26px" }}
             />
           }
         />
@@ -140,6 +141,16 @@ const Dashboard = () => {
           p="1rem"
           borderRadius="0.55rem"
         >
+          <Typography
+            variant="h6"
+            //fontWeight="bold"
+            //mb="1rem" // Adds spacing between the title and the chart
+            textAlign="center"
+            color={theme.palette.secondary.main}
+          >
+            Sales Overview
+          </Typography>
+
           <OverviewChart view="sales" isDashboard={true} />
         </Box>
 
@@ -151,7 +162,7 @@ const Dashboard = () => {
           description="Since last month"
           icon={
             <PersonAdd
-              sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+              sx={{ color: theme.palette.grey[500], fontSize: "26px" }}
             />
           }
         />
@@ -164,7 +175,7 @@ const Dashboard = () => {
           description="Since last month"
           icon={
             <Traffic
-              sx={{ color: theme.palette.secondary[300], fontSize: "26px" }}
+              sx={{ color: theme.palette.grey[500], fontSize: "26px" }}
             />
           }
         />
@@ -183,9 +194,12 @@ const Dashboard = () => {
               borderBottom: "none",
             },
             "& .MuiDataGrid-columnHeaders": {
-              backgroundColor: theme.palette.background.alt,
-              color: theme.palette.secondary[100],
+              backgroundColor: theme.palette.tables.background,
+              //color: theme.palette.grey[1000],
               borderBottom: "none",
+            },
+            "& .MuiDataGrid-columnHeaderTitle": {
+              color: theme.palette.secondary.main,
             },
             "& .MuiDataGrid-virtualScroller": {
               backgroundColor: theme.palette.background.alt,
@@ -215,8 +229,12 @@ const Dashboard = () => {
           backgroundColor={theme.palette.background.alt}
           p="1.5rem"
           borderRadius="0.55rem"
+          sx={{
+            height: "100%", // Allow it to grow
+            minHeight: "400px", // Ensure it is at least tall enough
+          }}
         >
-          <Typography variant="h6" sx={{ color: theme.palette.secondary[100] }}>
+          <Typography variant="h6" sx={{ color: theme.palette.secondary.main }}>
             Sales by Category
           </Typography>
 
@@ -225,7 +243,7 @@ const Dashboard = () => {
             p="0 0.6rem"
             fontSize="0.8rem"
             sx={{
-              color: theme.palette.secondary[200],
+              color: theme.palette.grey[1000],
             }}
           >
             Breakdown of real states and information via category for revenue

@@ -10,7 +10,7 @@ const Header = ({ title, subtitle }) => {
       {/* Title */}
       <Typography
         variant="h2"
-        color={theme.palette.secondary[100]}
+        color={theme.palette.secondary.main}
         fontWeight="bold"
         sx={{ mb: "5px" }}
       >
@@ -18,7 +18,7 @@ const Header = ({ title, subtitle }) => {
       </Typography>
 
       {/* Subtitle */}
-      <Typography variant="h5" color={theme.palette.secondary[300]}>
+      <Typography variant="h5" color={theme.palette.secondary.light}>
         {subtitle}
       </Typography>
     </Box>
