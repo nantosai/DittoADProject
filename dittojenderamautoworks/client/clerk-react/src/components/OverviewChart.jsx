@@ -20,14 +20,14 @@ const OverviewChart = ({ isDashboard = false, view }) => {
     // total sales line data
     const totalSalesLine = {
       id: "totalSales",
-      color: theme.palette.secondary.main,
+      color: theme.palette.tables.lines,
       data: [],
     };
 
     // total units line data
     const totalUnitsLine = {
       id: "totalUnits",
-      color: theme.palette.secondary[600],
+      color: theme.palette.tables.lines,
       data: [],
     };
 
@@ -59,7 +59,7 @@ const OverviewChart = ({ isDashboard = false, view }) => {
     );
 
     return [[totalSalesLine], [totalUnitsLine]];
-  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data,theme]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // loader
   if (!data || isLoading) {
@@ -74,31 +74,32 @@ const OverviewChart = ({ isDashboard = false, view }) => {
     // line chart
     <ResponsiveLine
       data={view === "sales" ? totalSalesLine : totalUnitsLine}
+      colors={(d) => d.color}
       theme={{
         axis: {
           domain: {
             line: {
-              stroke: theme.palette.secondary[200],
+              stroke: theme.palette.secondary.main,
             },
           },
           legend: {
             text: {
-              fill: theme.palette.secondary[200],
+              fill: theme.palette.secondary.main,
             },
           },
           ticks: {
             line: {
-              stroke: theme.palette.secondary[200],
+              stroke: theme.palette.secondary.main,
               strokeWidth: 1,
             },
             text: {
-              fill: theme.palette.secondary[200],
+              fill: theme.palette.secondary.main,
             },
           },
         },
         legends: {
           text: {
-            fill: theme.palette.secondary[200],
+            fill: theme.palette.secondary.main,
           },
         },
         tooltip: {
