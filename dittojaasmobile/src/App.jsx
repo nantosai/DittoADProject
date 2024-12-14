@@ -1,162 +1,88 @@
-import React, { useState } from "react";
-import { bookAppointment } from "./components/BookingFeature";
+import React, { useState } from 'react';
+import BookingFeature from './components/BookingFeature';
 
-const App = () => {
-  const [loading, setLoading] = useState(false);
-  const [confirmationNumber, setConfirmationNumber] = useState(null);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    date: "",
-    time: "",
-  });
+function App() {
+  const [isBooking, setIsBooking] = useState(false);
+  const [staffResources, setStaffResources] = useState([]); // For staff
+  const [services, setServices] = useState([]); // For services grouped by category
+  const [error, setError] = useState(null);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleBookAppointment = async (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.date || !formData.time) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    setLoading(true);
-    setError("");
+  const handleBookAppointment = async () => {
+    setIsBooking(true);
     try {
-      const appointmentDetails = {
-        meeting_slug: "homepage",
-        name: formData.name,
-        email: formData.email,
-        slot_date: formData.date,
-        slot_start_time: formData.time,
-        time_zone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        form_responses: JSON.stringify({
-          introduction: `Hi, I am ${formData.name}.`,
-          service_type: "Vehicle Service",
-        }),
-      };
-
-      const confirmation = await bookAppointment(appointmentDetails);
-      setConfirmationNumber(confirmation);
-      setFormData({ name: "", email: "", date: "", time: "" });
-    } catch (error) {
-      console.error("Error booking appointment:", error);
-      setError(error.message);
+      const { staffResource, services: fetchedServices } = await BookingFeature();
+      setStaffResources([staffResource]); // Setting only the staff resource
+      setServices(fetchedServices); // Setting all services for display
+    } catch (err) {
+      setError(err);
+      console.error("Booking failed:", err);
+    } finally {
+      setIsBooking(false);
     }
-    setLoading(false);
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>Welcome to JA Autoworks</h1>
-      <p style={styles.text}>
-        Schedule your vehicle servicing appointment today!
-      </p>
+    <div className="min-h-screen bg-gray-100">
+      <header className="bg-blue-600 text-white py-6 text-center">
+        <h1 className="text-4xl font-bold">Jenderam Autoworks</h1>
+      </header>
 
-      <form onSubmit={handleBookAppointment} style={styles.form}>
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={formData.name}
-          onChange={handleInputChange}
-          style={styles.input}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          value={formData.email}
-          onChange={handleInputChange}
-          style={styles.input}
-        />
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleInputChange}
-          style={styles.input}
-        />
-        <input
-          type="time"
-          name="time"
-          value={formData.time}
-          onChange={handleInputChange}
-          style={styles.input}
-        />
-        <button type="submit" style={styles.button} disabled={loading}>
-          {loading ? "Booking..." : "Book Appointment"}
-        </button>
-      </form>
+      <main className="container mx-auto px-4 py-8">
+        <div className="text-center">
+          <button 
+            onClick={handleBookAppointment}
+            disabled={isBooking}
+            className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition duration-300 ease-in-out"
+          >
+            {isBooking ? 'Booking...' : 'Book Appointment'}
+          </button>
 
-      {confirmationNumber && (
-        <p style={styles.success}>
-          Appointment booked successfully! Confirmation number:{" "}
-          {confirmationNumber}
-        </p>
-      )}
-      {error && <p style={styles.error}>Error: {error}</p>}
+          {error && (
+            <div className="text-red-500 mt-4">
+              Error: {error.message}
+            </div>
+          )}
+
+          {staffResources.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-2xl font-semibold mb-4">Staff</h2>
+              {staffResources.map((staff) => (
+                <div key={staff.id} className="bg-white shadow-md rounded-lg p-4 mb-4">
+                  <p className="font-bold">{staff.name}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {services.length > 0 && (
+            <div className="mt-6">
+              <h2 className="text-2xl font-semibold mb-4">Services</h2>
+              {/* Display services categorized by category */}
+              {services.reduce((categories, service) => {
+                const category = service.name.split('(')[1].split(')')[0]; // Extract category from service name
+                if (!categories[category]) {
+                  categories[category] = [];
+                }
+                categories[category].push(service);
+                return categories;
+              }, {}).map((category, index) => (
+                <div key={index} className="mb-6">
+                  <h3 className="text-xl font-semibold mb-2">{category}</h3>
+                  {category.map((service) => (
+                    <div key={service.id} className="bg-white shadow-md rounded-lg p-4 mb-4">
+                      <p className="font-bold">{service.name}</p>
+                      <p>Price: {service.price}</p>
+                      <p>Duration: {service.duration}</p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    textAlign: "center",
-    padding: "50px",
-    fontFamily: "Arial, sans-serif",
-    maxWidth: "600px",
-    margin: "0 auto",
-  },
-  header: {
-    fontSize: "2.5rem",
-    color: "#333",
-    marginBottom: "20px",
-  },
-  text: {
-    fontSize: "1.2rem",
-    color: "#666",
-    marginBottom: "30px",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-    marginBottom: "20px",
-  },
-  input: {
-    padding: "10px",
-    fontSize: "1rem",
-    borderRadius: "5px",
-    border: "1px solid #ddd",
-  },
-  button: {
-    backgroundColor: "#007BFF",
-    color: "#FFF",
-    padding: "12px 20px",
-    border: "none",
-    borderRadius: "5px",
-    fontSize: "1rem",
-    cursor: "pointer",
-    marginTop: "10px",
-  },
-  success: {
-    marginTop: "20px",
-    color: "green",
-    fontWeight: "bold",
-  },
-  error: {
-    marginTop: "20px",
-    color: "red",
-    fontWeight: "bold",
-  },
-};
+}
 
 export default App;
