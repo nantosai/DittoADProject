@@ -4,7 +4,7 @@ import axios from "axios";
 const apiClient = axios.create({
   baseURL: "https://eu-central-1.hapio.net/v1/",
   headers: {
-    Authorization: 'Bearer sQSlkdPSjBf8A4H5WtjQxbG4kDvR7U0OPkqPcnHUab7a0880',
+    Authorization: 'Bearer ${import.meta.env.VITE_HAPPY_API_TOKEN}',
   },
 });
 
