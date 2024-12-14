@@ -79,7 +79,10 @@ const BreakdownChart = ({ isDashboard = false }) => {
           },
           tooltip: {
             container: {
-              color: theme.palette.grey[0],
+              color: theme.palette.grey[900],
+            },
+            text: {
+              fill: theme.palette.grey[900],
             },
           },
         }}
@@ -95,9 +98,7 @@ const BreakdownChart = ({ isDashboard = false }) => {
           modifiers: [["darker", 0.2]],
         }}
         enableArcLabels={!isDashboard}
-        arcLinkLabelsTextColor={theme.palette.secondary.main}
-        arcLinkLabelsThickness={2}
-        arcLinkLabelsColor={{ from: "color" }}
+        enableArcLinkLabels={false}
         arcLabelsSkipAngle={10}
         arcLabelsTextColor={theme.palette.grey[0] || "white"}       
       />

@@ -32,6 +32,7 @@ import {
 
 import { FlexBetween } from ".";
 import profileImage from "../assets/profile.jpeg";
+import logoImage from "../assets/JAAS.png";
 
 // Nav items
 const navItems = [
@@ -55,10 +56,10 @@ const navItems = [
     text: "Transactions",
     icon: <ReceiptLongOutlined />,
   },
-  {
+  /*{
     text: "Geography",
     icon: <PublicOutlined />,
-  },
+  },*/
   {
     text: "Sales",
     icon: null,
@@ -137,9 +138,14 @@ const Sidebar = ({
         >
           <Box width="100%">
             {/* Brand Info */}
-            <Box m="1.5rem 2rem 2rem 3rem">
+            <Box m="2rem 2rem 2rem 0.8rem">
               <FlexBetween color={theme.palette.secondary.main}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
+                <img
+                  src={logoImage}
+                  alt="Logo"
+                  style={{ height: '75px', width: '75px', borderRadius: '50%' }} // Adjust size as needed
+                />
                   <Typography
                     variant="h4"
                     fontWeight="bold"
@@ -236,8 +242,8 @@ const Sidebar = ({
 
           {/* User */}
           <Box pb="1rem">
-            <Divider />
-            <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
+            <Divider sx={{ mt: 3 }}/>
+            <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0rem 3rem">
               <Box
                 component="img"
                 alt="profile"

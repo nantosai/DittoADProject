@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@clerk/themes": "^2.2.2"
+  }
+}
