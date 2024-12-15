@@ -57,7 +57,7 @@ const Product = ({
 
         {/* Price */}
         <Typography sx={{ mb: "1.5rem" }} color={theme.palette.secondary[400]}>
-          ${Number(price).toFixed(2)}
+          RM {Number(price).toFixed(2)}
         </Typography>
 
         {/* Rating */}
