@@ -23,9 +23,14 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.2.0",
+    "@mui/x-date-pickers": "^7.23.2",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "country-iso-2-to-3": "^1.1.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.0.3",
     "express": "^4.21.1",
     "express-rate-limit": "^6.7.0",
@@ -33,6 +38,8 @@
     "lodash": "^4.17.21",
     "mongoose": "^7.3.3",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.21"
+    "nodemon": "^2.0.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

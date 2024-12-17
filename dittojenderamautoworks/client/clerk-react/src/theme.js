@@ -59,6 +59,7 @@ export const themeSettings = (mode) => {
             secondary: {
               ...tokensDark.secondary,
               main: tokensDark.grey[0],
+              alt: tokensDark.primary[100],
               light: tokensDark.primary[200],
             },
             neutral: {
@@ -80,7 +81,8 @@ export const themeSettings = (mode) => {
             },
             tables: {
               background: tokensDark.primary[500],
-              lines: tokensDark.grey[400],
+              lines: tokensDark.primary[100],
+              anotherLine: tokensDark.primary[300],
             },
           }
           : {
@@ -93,6 +95,7 @@ export const themeSettings = (mode) => {
             secondary: {
               ...tokensDark.secondary,
               main: tokensDark.secondary[800],
+              alt: tokensDark.secondary[700],
               light: tokensDark.secondary[600],
             },
             neutral: {
@@ -114,7 +117,8 @@ export const themeSettings = (mode) => {
             },
             tables: {
               background: tokensDark.secondary[30],
-              lines: tokensDark.grey[300],
+              lines: tokensDark.secondary[400],
+              anotherLine: tokensDark.secondary[700],
             },
           }),
     },

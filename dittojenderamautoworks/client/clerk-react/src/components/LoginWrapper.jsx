@@ -3,7 +3,7 @@ import { Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import React, { useEffect } from 'react';
 import { neobrutalism } from '@clerk/themes';
-import logoImage from "../assets/JAAS.png";
+import logoImage from "../assets/JAAS_CLEAR.png";
 
 export default function LoginWrapper() {
     const { isSignedIn } = useUser();
@@ -18,22 +18,31 @@ export default function LoginWrapper() {
     return (
         <Container 
             maxWidth= {false} 
+            disableGutters
             sx={{ 
-                height: '100vh', 
-                width: '100vw',
+                minHeight: '100vh', 
+                width: '100%',
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
                 backgroundColor: '#ebe4e4'
             }}
         >
-            <Box>
+            <Box sx={{ p: 3 }}>
                 <SignIn
                     appearance={{
                         baseTheme: neobrutalism,
                         layout: {
                             logoImageUrl: logoImage, // Add your image path or URL here
                             logoPlacement: "inside", // Ensures the image is inside the card
+                        },
+
+                        elements: {
+                            logoBox: {
+                                height: '100px',          
+                                //width: '80px', 
+                                margin: '0 auto', 
+                            },
                         },
 
                         variables: {
