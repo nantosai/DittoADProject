@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useUser } from '@clerk/clerk-react';
 import {
   Box,
   Divider,
@@ -95,7 +96,7 @@ const navItems = [
 
 // Sidebar
 const Sidebar = ({
-  user,
+  // user,
   isNonMobile,
   drawerWidth,
   isSidebarOpen,
@@ -106,11 +107,16 @@ const Sidebar = ({
   const [active, setActive] = useState("");
   const navigate = useNavigate();
   const theme = useTheme();
+  const { isSignedIn, user, isLoaded } = useUser();
 
   // set active path
   useEffect(() => {
     setActive(pathname.substring(1));
   }, [pathname]);
+
+  if (!isLoaded) {
+    return null; // or a loading spinner
+  }
 
   return (
     <Box component="nav">
@@ -137,6 +143,7 @@ const Sidebar = ({
         >
           <Box width="100%">
             {/* Brand Info */}
+            {console.log("Clerk User Data:", user)}
             <Box m="1.5rem 2rem 2rem 3rem">
               <FlexBetween color={theme.palette.secondary.main}>
                 <Box display="flex" alignItems="center" gap="0.5rem">
