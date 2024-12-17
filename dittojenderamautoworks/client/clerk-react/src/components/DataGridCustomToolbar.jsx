@@ -1,6 +1,6 @@
 import React from "react";
 import { Search } from "@mui/icons-material";
-import { IconButton, TextField, InputAdornment } from "@mui/material";
+import { IconButton, TextField, InputAdornment, useTheme } from "@mui/material";
 import {
   GridToolbarDensitySelector,
   GridToolbarContainer,
@@ -12,14 +12,28 @@ import FlexBetween from "./FlexBetween";
 
 // Data Grid toolbar
 const DataGridCustomToolbar = ({ searchInput, setSearchInput, setSearch }) => {
+  const theme = useTheme();
+
   return (
     <GridToolbarContainer>
       <FlexBetween width="100%">
         {/* Left Side */}
         <FlexBetween>
-          <GridToolbarColumnsButton />
-          <GridToolbarDensitySelector />
-          <GridToolbarExport />
+          <GridToolbarColumnsButton 
+            sx={{ color: theme.palette.secondary.alt,
+                  '&:hover': { color: theme.palette.secondary.light },
+             }}
+          />
+          <GridToolbarDensitySelector 
+            sx={{ color: theme.palette.secondary.alt,
+                  '&:hover': { color: theme.palette.secondary.light },
+             }}
+          />
+          <GridToolbarExport 
+            sx={{ color: theme.palette.secondary.alt,
+              '&:hover': { color: theme.palette.secondary.light },  
+             }}
+          />
         </FlexBetween>
 
         {/* Right Side (search) */}
