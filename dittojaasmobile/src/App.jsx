@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from "react";
+import Feature from "./Feature";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <header style={headerStyle}>
+        <h1>Car Painting Appointment System</h1>
+      </header>
+      <main style={mainStyle}>
+        <Feature />
+      </main>
+      <footer style={footerStyle}>
+        <p>© {new Date().getFullYear()} Car Painting Service. All rights reserved.</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+const headerStyle = {
+  backgroundColor: "#2E3B4E",
+  color: "#FFFFFF",
+  padding: "20px",
+  textAlign: "center",
+};
+
+const mainStyle = {
+  padding: "20px",
+  display: "flex",
+  justifyContent: "center",
+};
+
+const footerStyle = {
+  marginTop: "20px",
+  backgroundColor: "#2E3B4E",
+  color: "#FFFFFF",
+  padding: "10px",
+  textAlign: "center",
+};
+
+export default App;
