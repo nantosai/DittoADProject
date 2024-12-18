@@ -1,354 +1,208 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 // Axios client for Hapio API
 const apiClient = axios.create({
-  baseURL: 'https://eu-central-1.hapio.net/v1/',
+  baseURL: "https://eu-central-1.hapio.net/v1/",
   headers: {
-    Authorization: `Bearer ${import.meta.env.VITE_HAPIO_API_KEY}`, // Ensure this is in .env file
+    'Authorization': `Bearer ${import.meta.env.VITE_HAPIO_API_KEY}`,
   },
 });
 
-const BookingFeature = ({ onBookingSuccess }) => {
-  const [services, setServices] = useState([]);
-  const [selectedCarType, setSelectedCarType] = useState(null);
-  const [selectedPaintJob, setSelectedPaintJob] = useState(null);
-  const [selectedService, setSelectedService] = useState(null); // Selected service
-  const [selectedAdditionalService, setSelectedAdditionalService] = useState(null);
-  const [price, setPrice] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(null);
-  const [selectedMonth, setSelectedMonth] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+const BookingFeature = () => {
+  const locationAddress = "No12, Kedai IKS Jenderam Hulu, Jenderam Hulu, 43800 Dengkil, Selangor";
+  const [locationId, setLocationId] = useState(null);
+  const [serviceId, setServiceId] = useState(null);
   const [bookableSlots, setBookableSlots] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [confirmationMessage, setConfirmationMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [resources, setResources] = useState([]); // Track car resources
 
-  // Define year options and month options
-  const years = [2024, 2025];
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+  // States for user selections
+  const [selectedCar, setSelectedCar] = useState(null);
+  const [selectedPaintJob, setSelectedPaintJob] = useState(null);
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [bookingConfirmed, setBookingConfirmed] = useState(false);
+
+  const currentYear = new Date().getFullYear();
+  const years = [currentYear, currentYear + 1];
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  const dates = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  const carTypes = [
+    { name: "Mini A", paintJobs: { "Kansai Pro Clear": 1200, "Nippon High Solid": 1450 } },
+    { name: "Mini B", paintJobs: { "Kansai Pro Clear": 1300, "Nippon High Solid": 1550 } },
+    { name: "Sedan A", paintJobs: { "Kansai Pro Clear": 1500, "Nippon High Solid": 1750 } },
+    { name: "SUV A", paintJobs: { "Kansai Pro Clear": 1700, "Nippon High Solid": 2000 } },
   ];
 
-  const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-
-  // Define price list
-  const priceList = {
-    Mini_A: {
-      'Kansai Pro Clear': 1200,
-      'Nippon High Solid': 1450,
-      'Kansai High Shield Super Premium': 1650,
-    },
-    Mini_B: {
-      'Kansai Pro Clear': 1300,
-      'Nippon High Solid': 1550,
-      'Kansai High Shield Super Premium': 1750,
-    },
-    Sedan_A: {
-      'Kansai Pro Clear': 1500,
-      'Nippon High Solid': 1750,
-      'Kansai High Shield Super Premium': 1900,
-    },
-    Sedan_B: {
-      'Kansai Pro Clear': 1700,
-      'Nippon High Solid': 1950,
-      'Kansai High Shield Super Premium': 2150,
-    },
-    SUV_A: {
-      'Kansai Pro Clear': 1700,
-      'Nippon High Solid': 2000,
-      'Kansai High Shield Super Premium': 2200,
-    },
-    SUV_B: {
-      'Kansai Pro Clear': 2000,
-      'Nippon High Solid': 2300,
-      'Kansai High Shield Super Premium': 2500,
-    },
-    MPV_A: {
-      'Kansai Pro Clear': 1700,
-      'Nippon High Solid': 2000,
-      'Kansai High Shield Super Premium': 2200,
-    },
-    MPV_B: {
-      'Kansai Pro Clear': 2000,
-      'Nippon High Solid': 2300,
-      'Kansai High Shield Super Premium': 2500,
-    },
-  };
-
-  // Additional services price range (rough estimate)
-  const additionalServicePrice = {
-    'Cat Crystal': { min: 200, max: 500 },
-    'Cat Pearl': { min: 200, max: 500 },
-    'Cat Special Effect': { min: 300, max: 600 },
-    'Cat Silver': { min: 400, max: 400 },
-    'Simen': { min: 100, max: 300 },
-    'Ketuk': { min: 150, max: 500 },
-    'Gosok Buang Cat Rosak': { min: 300, max: 400 },
-  };
-
-  // Fetch available services
+  // Create Location
   useEffect(() => {
-    const fetchServices = async () => {
+    const createLocationAndResources = async () => {
       try {
-        const response = await apiClient.get('services');
-        if (response.data && Array.isArray(response.data.data)) {
-          setServices(response.data.data);
-        } else {
-          console.error('Expected an array, but received:', response.data);
-        }
+        const locationResponse = await apiClient.post("/locations", {
+          name: "Jenderam Hulu Car Service",
+          address: locationAddress,
+          coordinates: { latitude: 2.9942, longitude: 101.6971 },
+          time_zone: "Asia/Kuala_Lumpur",
+          resource_selection_strategy: "equalize",
+          enabled: true,
+        });
+
+        setLocationId(locationResponse.data.id);
+
+        // Create car resources and link services
+        await createResourcesAndServices(locationResponse.data.id);
       } catch (error) {
-        console.error('Error fetching services:', error);
+        console.error("Error creating location:", error);
       }
     };
-    fetchServices();
+
+    createLocationAndResources();
   }, []);
 
-  // Calculate the price based on selected car type, paint job, and additional services
-  useEffect(() => {
-    if (!selectedCarType || !selectedPaintJob) return;
+  // Create Resources and Services
+  const createResourcesAndServices = async (locationId) => {
+    try {
+      const createdResources = [];
+      for (const car of carTypes) {
+        const resourceResponse = await apiClient.post("/resources", {
+          location_id: locationId,
+          name: car.name,
+          enabled: true,
+        });
 
-    const basePrice = priceList[selectedCarType][selectedPaintJob];
-    let totalPrice = basePrice;
+        console.log("Resource Created:", resourceResponse.data);
+        createdResources.push(resourceResponse.data);
 
-    // Add price for additional service
-    if (selectedAdditionalService) {
-      const additionalService = additionalServicePrice[selectedAdditionalService];
-      const avgPrice = (additionalService.min + additionalService.max) / 2;
-      totalPrice += avgPrice;
-    }
-
-    setPrice(totalPrice);
-  }, [selectedCarType, selectedPaintJob, selectedAdditionalService]);
-
-  // Fetch available slots when service and date are selected
-  useEffect(() => {
-    const fetchSlots = async () => {
-      if (!selectedDate || !selectedCarType || !selectedPaintJob || !selectedService) {
-        return;
+        // Create a recurring schedule for each resource
+        await createRecurringSchedule(resourceResponse.data.id, locationId);
       }
+      setResources(createdResources);
+    } catch (error) {
+      console.error("Error creating resources/services:", error);
+    }
+  };
 
-      try {
-        setLoading(true);
-        const response = await apiClient.get(
-          `services/${selectedService.id}/bookable-slots`,
-          {
-            params: {
-              from: `${selectedDate}T00:00:00+00:00`,
-              to: `${selectedDate}T23:59:59+00:00`,
-              location: selectedService.location_id,
-            },
-          }
+  const createRecurringSchedule = async (resourceId, locationId) => {
+    try {
+      const scheduleResponse = await apiClient.post(
+        `/resources/${resourceId}/recurring-schedules`,
+        { location_id: locationId, start_date: "2024-01-01" }
+      );
+
+      const scheduleId = scheduleResponse.data.id;
+
+      // Create schedule blocks for weekdays and Saturdays
+      const weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+      for (const day of weekdays) {
+        await apiClient.post(
+          `/resources/${resourceId}/recurring-schedules/${scheduleId}/schedule-blocks`,
+          { weekday: day, start_time: "08:00:00", end_time: "12:00:00" }
         );
-        setBookableSlots(response.data.data);
-        setLoading(false);
+      }
+      console.log("Recurring schedule created for resource:", resourceId);
+    } catch (error) {
+      console.error("Error creating recurring schedule:", error);
+    }
+  };
+
+  // Fetch Available Time Slots
+  useEffect(() => {
+    if (!selectedYear || !selectedMonth || !selectedDate || !serviceId || !locationId) return;
+
+    const fetchSlots = async () => {
+      try {
+        const response = await apiClient.get(`/services/${serviceId}/bookable-slots`, {
+          params: {
+            from: `${selectedYear}-${String(selectedMonth).padStart(2, "0")}-${String(selectedDate).padStart(2, "0")}T08:00:00`,
+            to: `${selectedYear}-${String(selectedMonth).padStart(2, "0")}-${String(selectedDate).padStart(2, "0")}T12:00:00`,
+            location: locationId,
+          },
+        });
+        console.log("Bookable Slots:", response.data);
+        setBookableSlots(response.data.data || []);
       } catch (error) {
-        setLoading(false);
-        console.error('Error fetching bookable slots:', error);
+        console.error("Error fetching bookable slots:", error);
       }
     };
+
     fetchSlots();
-  }, [selectedDate, selectedCarType, selectedPaintJob, selectedService]);
+  }, [selectedYear, selectedMonth, selectedDate, serviceId, locationId]);
 
-  // Handle Year Selection
-  const handleYearSelect = (year) => {
-    setSelectedYear(year);
-    setSelectedMonth(null); // Reset month when year is changed
-    setSelectedDate(null); // Reset date when year is changed
-  };
-
-  // Handle Month Selection
-  const handleMonthSelect = (month) => {
-    setSelectedMonth(month);
-    setSelectedDate(null); // Reset date when month is changed
-  };
-
-  // Get available dates (weekdays only)
-  const getAvailableDates = () => {
-    if (!selectedYear || !selectedMonth) return [];
-
-    const startDate = new Date(selectedYear, months.indexOf(selectedMonth), 1);
-    const endDate = new Date(selectedYear, months.indexOf(selectedMonth) + 1, 0); // Last day of the month
-
-    const availableDates = [];
-
-    // Loop through each date of the month and check if it's a weekday (Monday to Friday)
-    for (let date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
-      const day = date.getDay();
-      if (day >= 1 && day <= 5) {
-        availableDates.push(new Date(date));
-      }
-    }
-
-    return availableDates;
-  };
-
-  // Handle Date Selection
-  const handleDateSelect = (date) => {
-    setSelectedDate(date);
-    setSelectedSlot(null); // Reset selected slot when date is selected
-  };
-
-  // Handle Time Slot Selection
-  const handleTimeSlotSelect = (slot) => {
-    setSelectedSlot(slot);
-  };
-
-  // Handle Booking Confirmation
-  const handleBooking = async () => {
+  const handleBookingSubmit = async () => {
     if (!selectedSlot) {
-      setConfirmationMessage('Please select a time slot.');
+      alert("Please select a time slot.");
       return;
     }
 
     try {
-      const response = await apiClient.post('bookings', {
-        starts_at: selectedSlot.starts_at.toISOString(),
-        ends_at: selectedSlot.ends_at.toISOString(),
-      });
+      const bookingData = {
+        location_id: locationId,
+        service_id: serviceId,
+        starts_at: selectedSlot.starts_at,
+        ends_at: selectedSlot.ends_at,
+      };
 
-      setConfirmationMessage(`Booking confirmed! Your booking ID is: ${response.data.id}`);
-      onBookingSuccess(response.data.id); // Trigger success callback
+      await apiClient.post("/bookings", bookingData);
+      setBookingConfirmed(true);
+      alert("Booking confirmed!");
     } catch (error) {
-      setConfirmationMessage('Failed to confirm booking. Please try again.');
+      console.error("Error creating booking:", error);
+      alert("Failed to confirm booking.");
     }
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Book a Service</h1>
+    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+      <h1>Car Service Booking</h1>
 
-      {/* Step 1: Select Year */}
+      {/* Date Selection */}
       <div>
-        <h2>Select Year:</h2>
-        {years.map((year) => (
-          <button
-            key={year}
-            onClick={() => handleYearSelect(year)}
-            style={{
-              margin: '10px',
-              padding: '10px',
-              backgroundColor: selectedYear === year ? 'lightblue' : 'white',
-            }}
-          >
-            {year}
-          </button>
-        ))}
+        <h2>Select Date</h2>
+        <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+          <option value="">Year</option>
+          {years.map((y) => <option key={y} value={y}>{y}</option>)}
+        </select>
+
+        <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+          <option value="">Month</option>
+          {months.map((m) => <option key={m} value={m}>{m}</option>)}
+        </select>
+
+        <select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}>
+          <option value="">Date</option>
+          {dates.map((d) => <option key={d} value={d}>{d}</option>)}
+        </select>
       </div>
 
-      {/* Step 2: Select Month */}
-      {selectedYear && (
-        <div>
-          <h2>Select Month:</h2>
-          {months.map((month) => (
-            <button
-              key={month}
-              onClick={() => handleMonthSelect(month)}
-              style={{
-                margin: '10px',
-                padding: '10px',
-                backgroundColor: selectedMonth === month ? 'lightblue' : 'white',
-              }}
-            >
-              {month}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Car Type Selection */}
+      <h2>Select Car Type</h2>
+      {carTypes.map((car) => (
+        <button key={car.name} onClick={() => setSelectedCar(car)}>
+          {car.name}
+        </button>
+      ))}
 
-      {/* Step 3: Select Date (Weekdays only) */}
-      {selectedMonth && (
-        <div>
-          <h2>Select Date (Weekdays only):</h2>
-          {getAvailableDates().map((date) => (
-            <button
-              key={date}
-              onClick={() => handleDateSelect(date)}
-              style={{
-                margin: '10px',
-                padding: '10px',
-                backgroundColor: selectedDate && selectedDate.getDate() === date.getDate() ? 'lightblue' : 'white',
-              }}
-            >
-              {date.toLocaleDateString()}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Step 4: Show Services */}
-      {selectedDate && (
-        <div>
-          <h2>Select Service:</h2>
-          {services.map((service) => (
-            <button
-              key={service.id}
-              onClick={() => setSelectedService(service)}
-              style={{
-                margin: '10px',
-                padding: '10px',
-                backgroundColor: selectedService === service ? 'lightblue' : 'white',
-              }}
-            >
-              {service.name}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Step 5: Show Available Time Slots */}
-      {selectedService && selectedDate && (
-        <div>
-          <h3>Available Time Slots:</h3>
-          <div>
-            {loading ? (
-              <div>Loading slots...</div>
-            ) : (
-              bookableSlots.map((slot) => (
-                <button
-                  key={slot.starts_at}
-                  onClick={() => handleTimeSlotSelect(slot)}
-                  style={{
-                    margin: '10px',
-                    padding: '10px',
-                    backgroundColor: selectedSlot && selectedSlot.starts_at === slot.starts_at ? 'lightgreen' : 'white',
-                  }}
-                >
-                  {new Date(slot.starts_at).toLocaleTimeString()} - {new Date(slot.ends_at).toLocaleTimeString()}
-                </button>
-              ))
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Step 6: Submit Booking */}
-      {selectedSlot && (
-        <div>
-          <h2>Confirm Your Booking:</h2>
-          <button
-            onClick={handleBooking}
-            style={{
-              padding: '20px',
-              background: 'red',
-              color: 'white',
-              fontSize: '18px',
-              width: '200px',
-              marginTop: '20px',
-            }}
-          >
-            Submit Booking
+      {/* Time Slot Selection */}
+      <h2>Select Time Slot</h2>
+      {bookableSlots.length > 0 ? (
+        bookableSlots.map((slot) => (
+          <button key={slot.starts_at} onClick={() => setSelectedSlot(slot)}>
+            {new Date(slot.starts_at).toLocaleTimeString()} - {new Date(slot.ends_at).toLocaleTimeString()}
           </button>
-        </div>
+        ))
+      ) : (
+        <p>No available slots</p>
       )}
 
-      {/* Display Confirmation Message */}
-      {confirmationMessage && (
-        <div style={{ marginTop: '20px', padding: '10px', background: '#f9f9f9', border: '1px solid #ccc' }}>
-          <h3>{confirmationMessage}</h3>
-        </div>
-      )}
+      <button onClick={handleBookingSubmit} style={{ marginTop: "20px", padding: "10px 20px" }}>
+        Submit Booking
+      </button>
+
+      {bookingConfirmed && <p>Booking Confirmed!</p>}
     </div>
   );
 };
