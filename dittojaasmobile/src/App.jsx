@@ -1,28 +1,30 @@
-// App.jsx
-import React, { useState } from 'react';
-import BookingFeature from './components/BookingFeature'; // Import BookingFeature
+import React from 'react';
+import { CssBaseline, Container, ThemeProvider, createTheme } from '@mui/material';
+import BookingFeature from './components/BookingFeature';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#d32f2f',
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, sans-serif',
+  },
+});
 
 const App = () => {
-  const [bookingSuccess, setBookingSuccess] = useState(null);
-
-  const handleBookingSuccess = (bookingId) => {
-    setBookingSuccess(bookingId);
-  };
-
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Welcome to the Booking System</h1>
-
-      {/* Show BookingFeature component */}
-      <BookingFeature onBookingSuccess={handleBookingSuccess} />
-
-      {/* Display booking success message */}
-      {bookingSuccess && (
-        <div style={{ marginTop: '20px', padding: '10px', backgroundColor: 'lightgreen', border: '1px solid #ccc' }}>
-          <h2>Your booking was successful! Booking ID: {bookingSuccess}</h2>
-        </div>
-      )}
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Container maxWidth="md" sx={{ mt: 5 }}>
+        <h1 style={{ textAlign: 'center' }}>Jenderam Autoworks Booking</h1>
+        <BookingFeature />
+      </Container>
+    </ThemeProvider>
   );
 };
 
