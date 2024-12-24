@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react';
 

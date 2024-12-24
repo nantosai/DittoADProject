@@ -37,8 +37,6 @@ export default <App><*/
 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import reactLogo from './assets/react.svg';
-import viteLogo from '/vite.svg';
 import './App.css';
 
 // Importing route components
@@ -58,19 +56,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* Header with Vite and React logos */}
-        <header>
-          <div>
-            <a href="https://vite.dev" target="_blank" rel="noopener noreferrer">
-              <img src={viteLogo} className="logo" alt="Vite logo" />
-            </a>
-            <a href="https://react.dev" target="_blank" rel="noopener noreferrer">
-              <img src={reactLogo} className="logo react" alt="React logo" />
-            </a>
-          </div>
-          <h1>Vite + React</h1>
-        </header>
-
         {/* Navigation Links */}
         <nav>
           <ul>
@@ -88,7 +73,7 @@ function App() {
             count is {count}
           </button>
           <p>
-            Edit <code>src/App.tsx</code> and save to test HMR
+            Edit <code>src/App.jsx</code> and save to test HMR
           </p>
         </div>
 
@@ -114,8 +99,6 @@ function App() {
 }
 
 export default App;
-
-
 
 
 
